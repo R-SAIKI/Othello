@@ -5,25 +5,42 @@
     <meta charset="UTF-8">
     <title>Othello</title>
     <link rel="stylesheet" type="text/css" href="othello.css">
+    <script type="text/javascript" src="othello.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
 </head>
 
 <body>
-  <script type="text/javascript" src="othello.js"></script> 
-
-    <!-- 盤面の要素定義 -->
-    <div style="display:none">
-        <div id="cell" class="square">
-            <div class="cell"></div>
-        </div>
-        <div id="black" class="square"><img class="block" src="black.png"></img>
-        </div>
-        <div id="white" class="square"><img class="block" src="white.png"></img>
-        </div>
+    <div class="ChangeElem_Btn_Content">
+        <button class="ChangeElem_Btn">divのオセロ</button>
+        <button class="ChangeElem_Btn">canvasのオセロ(未完成)</button>
     </div>
+    <ul>
+        <li class="ChangeElem_Panel">
+            <iframe width="1000" height="1000" src="othelloDiv.html" scrolling="auto"></iframe>
+        </li>
+        <li class="ChangeElem_Panel">
+            <iframe width="1000" height="1000" src="othelloCanvas.html" scrolling="auto"></iframe>
+        </li>
+    </ul>
+    <script type="text/javascript">
+        $(function() {
+            /*初期表示*/
+            $('.ChangeElem_Panel').hide();
+            $('.ChangeElem_Panel').eq(0).show();
+            $('.ChangeElem_Btn').eq(0).addClass('is-active');
+            /*クリックイベント*/
+            $('.ChangeElem_Btn').each(function() {
+                $(this).on('click', function() {
+                    var index = $('.ChangeElem_Btn').index(this);
+                    $('.ChangeElem_Btn').removeClass('is-active');
+                    $(this).addClass('is-active');
+                    $('.ChangeElem_Panel').hide();
+                    $('.ChangeElem_Panel').eq(index).show();
+                });
+            });
+        });
 
-    <div id="board"></div>
-
-
+    </script>
 </body>
 
 </html>

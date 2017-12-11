@@ -1,6 +1,6 @@
-var Othello = function(pStone, pSelector) {
+var Othello = function() {
     // 変数定義
-    this.this.BOARD_TYPE = {
+    this.BOARD_TYPE = {
         'WIDTH': 8,
         'HEIGHT': 8,
     };
@@ -12,31 +12,38 @@ var Othello = function(pStone, pSelector) {
         'SWITHING': 3,
     };
 
-    this.stone = pStone;
+    this.stone = null;
     this.board = [];
 
-    this.turn = PIECE_TYPE.BLACK;
+    this.turn = this.PIECE_TYPE.BLACK;
 
     this.GRID_SIZE = 64;//１つのグリッドのピクセルサイズ
     this.CIRCLE_RADIUS = 28;
 
-    this.g_canvas = document.querySelector(pSelector);
+    this.g_canvas = null;
   }
 
-  Othello.prototype.loadInit = function(){
+  Othello.prototype.loadInit = function(pCell, pBlack, pWhite){
       // 盤面を初期化
       for (var i = 0; i < 10; i++) {
         this.board[i] = [];
         for (var j = 0; j < 10; j++) {
-            this.board[i][j] = PIECE_TYPE.NONE;
+            this.board[i][j] = this.PIECE_TYPE.NONE;
         }
     }
 
     // 黒白の初期配置
-    this.board[4][5] = PIECE_TYPE.BLACK;
-    this.board[5][4] = PIECE_TYPE.BLACK;
-    this.board[4][4] = PIECE_TYPE.WHITE;
-    this.board[5][5] = PIECE_TYPE.WHITE;
+    this.board[4][5] = this.PIECE_TYPE.BLACK;
+    this.board[5][4] = this.PIECE_TYPE.BLACK;
+    this.board[4][4] = this.PIECE_TYPE.WHITE;
+    this.board[5][5] = this.PIECE_TYPE.WHITE;
+
+    // 0:石無し, 1:黒, 2:白
+    this.stone = [
+        document.getElementById(pCell),
+        document.getElementById(pBlack),
+        document.getElementById(pWhite)
+    ];
   }
 
   Othello.prototype.checkTurnOver = function (x, y, flip) {
@@ -52,21 +59,21 @@ var Othello = function(pStone, pSelector) {
                     var nx = x + dx;
                     var ny = y + dy;
                     var n = 0;
-                    while (this.board[nx][ny] == PIECE_TYPE.MAX - turn) {
+                    while (this.board[nx][ny] == this.PIECE_TYPE.SWITHING - this.turn) {
                         n++;
                         nx += dx;
                         ny += dy;
                     }
     
-                    if (n > 0 && this.board[nx][ny] == turn) {
+                    if (n > 0 && this.board[nx][ny] == this.turn) {
                         ret += n;
     
                         if (flip) {
                             nx = x + dx;
                             ny = y + dy;
     
-                            while (this.board[nx][ny] == PIECE_TYPE.MAX - turn) {
-                                this.board[nx][ny] = turn;
+                            while (this.board[nx][ny] == this.PIECE_TYPE.SWITHING - this.turn) {
+                                this.board[nx][ny] = this.turn;
                                 nx += dx;
                                 ny += dy;
                             }
@@ -80,70 +87,4 @@ var Othello = function(pStone, pSelector) {
             return ret;
         }
     
-    Othello.prototype.showBoard = function (pBoard) {
-        
-                var b = document.getElementById(pBoard);
-        
-                while (b.firstChild) {
-                    b.removeChild(b.firstChild);
-                }
-        
-                for (var y = 1; y <= this.BOARD_TYPE.HEIGHT; y++) {
-                    for (var x = 1; x <= this.BOARD_TYPE.WIDTH; x++) {
-                        var cell = stone[this.board[x][y]].cloneNode(true);
-        
-                        cell.style.left = ((x - 1) * 31) + "px";
-                        cell.style.top = ((y - 1) * 31) + "px";
-                        b.appendChild(cell);
-        
-                        if (this.board[x][y] == PIECE_TYPE.NONE) {
-                            (function () {
-                                var _x = x;
-                                var _y = y;
-                                cell.onclick = function () {
-                                    if (checkTurnOver(_x, _y, true) > 0) {
-                                        this.board[_x][_y] = turn;
-                                        showBoard();
-                                        turn = PIECE_TYPE.MAX - turn;
-                                    }
-        
-                                };
-                            })();
-                        }
-                    }
-                }
-        
-            };
     
-    Othello.prototype.drawCanvas = function (){
-        　　//コンテキストを取得する。この場合のコンテキストはスケッチブックと
-        　　//絵筆に相当する。2dは2次元の意味。
-        　　var context = g_canvas.getContext('2d');
-        　　for(var y=0; y<ROW_NUM; y++){
-        　　　for(var x=0; x<COL_NUM; x++){
-        　　　　drawGrid(context, x, y);
-        　　　}
-        　　}
-        　　drawStone(context, 'white', 224, 224);
-        　　drawStone(context, 'white', 288, 288);
-        　　drawStone(context, 'black', 288, 224);
-        　　drawStone(context, 'black', 224, 288);
-        　}
-
-    Othello.prototype.drawGrid = function (context, x, y){
-        　　context.clearRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
-        　　context.fillStyle = 'rgba(0, 128, 0, 1.0)';
-        　　context.strokeStyle = 'black';
-        　　context.fillRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
-        　　context.strokeRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
-        　}
-
-    Othello.prototype.drawStone = function (context, color, x, y){
-            　　context.beginPath();//円を描くためのパスを一度リセットする。
-            　　context.arc(x, y, CIRCLE_RADIUS, 0, 2 * Math.PI, false);
-            　　context.fillStyle = color;
-            　　context.fill();
-            　　context.lineWidth = 4;
-            　　context.strokeStyle = 'black';
-            　　context.stroke();
-            　}

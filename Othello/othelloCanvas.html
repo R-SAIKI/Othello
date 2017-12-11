@@ -4,7 +4,8 @@
 <meta charset="UTF-8"/>
 <title>html5 canvas test</title>
 <link rel="stylesheet" type="text/css" href="othelloCanvas.css">
-<script type="text/javascript" src="othelloCanvasClass.js"></script>
+<script type="text/javascript" src="othelloCanvas.js"></script>
+<script type="text/javascript" src="othello.js"></script>
 </head>
 <body>
 <div id="bodyWrapper">
@@ -15,9 +16,10 @@
     
     　onload = function(){
     //cambusを描くための下準備
-    var othelloStart = new othelloCanvasClass("#canvas_stage");
+    var othelloCanvasStart = new Othello();
+    othelloCanvasStart.g_canvas = "canvas_stage";
     //cambus描画処理↓
-    othelloStart.drawCanvas();
+    showBoard(othelloCanvasStart);
     }
 
     </script>

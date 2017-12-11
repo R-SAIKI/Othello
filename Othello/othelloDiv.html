@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Othello</title>
+    <link rel="stylesheet" type="text/css" href="othelloDiv.css">
+    <script type="text/javascript" src="othelloDiv.js"></script> 
+    <script type="text/javascript" src="othello.js"></script> 
+</head>
+
+<body>
+    <!-- 盤面の要素定義 -->
+    <div style="display:none">
+        <div id="cell" class="square">
+            <div class="cell"></div>
+        </div>
+        <div id="black" class="square"><img class="block" src="black.png"></img>
+        </div>
+        <div id="white" class="square"><img class="block" src="white.png"></img>
+        </div>
+    </div>
+
+    <div id="board"></div>
+    <canvas width="640" height="640" id="canvas_stage"></canvas>
+
+    <script type="text/javascript">
+    onload = function(){
+        var othelloDivStart = new Othello();
+        othelloDivStart.loadInit("cell", "black", "white");
+        showBoard(othelloDivStart,"board");
+    }  
+    </script>
+</body>
+
+</html>
