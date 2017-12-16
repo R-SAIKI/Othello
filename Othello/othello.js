@@ -12,18 +12,12 @@ var Othello = function() {
         'SWITHING': 3,
     };
 
-    this.stone = null;
     this.board = [];
 
     this.turn = this.PIECE_TYPE.BLACK;
-
-    this.GRID_SIZE = 64;//１つのグリッドのピクセルサイズ
-    this.CIRCLE_RADIUS = 28;
-
-    this.g_canvas = null;
   }
 
-  Othello.prototype.loadInit = function(pCell, pBlack, pWhite){
+  Othello.prototype.loadInit = function(){
       // 盤面を初期化
       for (var i = 0; i < 10; i++) {
         this.board[i] = [];
@@ -38,12 +32,6 @@ var Othello = function() {
     this.board[4][4] = this.PIECE_TYPE.WHITE;
     this.board[5][5] = this.PIECE_TYPE.WHITE;
 
-    // 0:石無し, 1:黒, 2:白
-    this.stone = [
-        document.getElementById(pCell),
-        document.getElementById(pBlack),
-        document.getElementById(pWhite)
-    ];
   }
 
   Othello.prototype.checkTurnOver = function (x, y, flip) {
@@ -86,5 +74,5 @@ var Othello = function() {
     
             return ret;
         }
-    
+        
     

@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <title>Othello</title>
     <link rel="stylesheet" type="text/css" href="othello.css">
+    <link rel="stylesheet" type="text/css" href="othelloCanvas.css">
+    <link rel="stylesheet" type="text/css" href="othelloDiv.css">
     <script type="text/javascript" src="othello.js"></script>
-    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>   
+    <script type="text/javascript" src="othelloCanvas.js"></script>
+    <script type="text/javascript" src="othelloDiv.js"></script>
 </head>
 
 <body>
@@ -16,10 +20,24 @@
     </div>
     <ul>
         <li class="ChangeElem_Panel">
-            <iframe width="1000" height="1000" src="othelloDiv.html" scrolling="auto"></iframe>
+            <div style="display:none">
+                <div id="cell" class="square">
+                    <div class="cell"></div>
+                </div>
+                <div id="black" class="square"><img class="block" src="black.png"></img>
+                </div>
+                <div id="white" class="square"><img class="block" src="white.png"></img>
+                </div>
+            </div>
+        
+            <div id="board"></div>
+    
         </li>
         <li class="ChangeElem_Panel">
-            <iframe width="1000" height="1000" src="othelloCanvas.html" scrolling="auto"></iframe>
+            <div id="bodyWrapper">
+                <p>以下がcanvasの内容。</p>
+                <canvas width="640" height="640" id="canvas_stage"></canvas>               
+            </div><!-- end of bodyWrapper -->
         </li>
     </ul>
     <script type="text/javascript">
@@ -38,6 +56,15 @@
                     $('.ChangeElem_Panel').eq(index).show();
                 });
             });
+
+            var othelloDivStart = new OthelloDiv("cell", "black", "white");
+                othelloDivStart.loadInit();
+                othelloDivStart.showBoard(othelloDivStart,"board");
+ 
+                //cambusを描くための下準備 
+                var othelloCanvasStart = new OthelloCanvas();    
+                //cambus描画処理↓ 
+                othelloCanvasStart.showBoard(othelloCanvasStart,"canvas_stage");
         });
 
     </script>
