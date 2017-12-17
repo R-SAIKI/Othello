@@ -7,9 +7,7 @@ var OthelloDiv = function(pCell, pBlack, pWhite){
     ];
 }
 
-OthelloDiv.prototype = new Othello();
-
-OthelloDiv.prototype.showBoard = function (pInstans,pBoard) {
+OthelloDiv.prototype.showBoard = function (pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, pBoard) {
     
             var b = document.getElementById(pBoard);
     
@@ -17,23 +15,24 @@ OthelloDiv.prototype.showBoard = function (pInstans,pBoard) {
                 b.removeChild(b.firstChild);
             }
     
-            for (var y = 1; y <= this.BOARD_TYPE.HEIGHT; y++) {
-                for (var x = 1; x <= this.BOARD_TYPE.WIDTH; x++) {
-                    var cell = this.stone[this.board[x][y]].cloneNode(true);
+            for (var y = 1; y <= pOthelloBL.BOARD_TYPE.HEIGHT; y++) {
+                for (var x = 1; x <= pOthelloBL.BOARD_TYPE.WIDTH; x++) {
+                    var cell = this.stone[pOthelloBL.board[x][y]].cloneNode(true);
     
                     cell.style.left = ((x - 1) * 31) + "px";
                     cell.style.top = ((y - 1) * 31) + "px";
                     b.appendChild(cell);
     
-                    if (this.board[x][y] == this.PIECE_TYPE.NONE) {
+                    if (pOthelloBL.board[x][y] == pOthelloBL.PIECE_TYPE.NONE) {
                         (function () {
                             var _x = x;
                             var _y = y;
                             cell.onclick = function () {
-                                if (pInstans.checkTurnOver(_x, _y, true) > 0) {
-                                    pInstans.board[_x][_y] = pInstans.turn;
-                                    pInstans.showBoard(pInstans,"board");
-                                    pInstans.turn = pInstans.PIECE_TYPE.SWITHING - pInstans.turn;
+                                if (pOthelloBL.checkTurnOver(_x, _y, true) > 0) {
+                                    pOthelloBL.board[_x][_y] = pOthelloBL.turn;
+                                    pOthelloDivUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, pBoard);
+                                    othelloCanvasUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, "canvas_stage");
+                                    pOthelloBL.turn = pOthelloBL.PIECE_TYPE.SWITHING - pOthelloBL.turn;
                                 }
     
                             };

@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="othelloCanvas.css">
     <link rel="stylesheet" type="text/css" href="othelloDiv.css">
     <script type="text/javascript" src="othello.js"></script>
-    <script type="text/javascript" src="jquery.min.js"></script>   
+    <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="othelloCanvas.js"></script>
     <script type="text/javascript" src="othelloDiv.js"></script>
 </head>
@@ -29,15 +29,16 @@
                 <div id="white" class="square"><img class="block" src="white.png"></img>
                 </div>
             </div>
-        
+
             <div id="board"></div>
-    
+
         </li>
         <li class="ChangeElem_Panel">
             <div id="bodyWrapper">
                 <p>以下がcanvasの内容。</p>
-                <canvas width="640" height="640" id="canvas_stage"></canvas>               
-            </div><!-- end of bodyWrapper -->
+                <canvas width="640" height="640" id="canvas_stage"></canvas>
+            </div>
+            <!-- end of bodyWrapper -->
         </li>
     </ul>
     <script type="text/javascript">
@@ -57,14 +58,18 @@
                 });
             });
 
-            var othelloDivStart = new OthelloDiv("cell", "black", "white");
-                othelloDivStart.loadInit();
-                othelloDivStart.showBoard(othelloDivStart,"board");
- 
-                //cambusを描くための下準備 
-                var othelloCanvasStart = new OthelloCanvas();    
-                //cambus描画処理↓ 
-                othelloCanvasStart.showBoard(othelloCanvasStart,"canvas_stage");
+            //共通ロジックを初期化
+            var othelloBL = new Othello();
+            othelloBL.loadInit();
+
+            var othelloDivUI = new OthelloDiv("cell", "black", "white");
+            var othelloCanvasUI = new OthelloCanvas();
+
+            //divで描画
+            othelloDivUI.showBoard(othelloDivUI, othelloCanvasUI, othelloBL, "board");
+
+            //cambusで描画
+            othelloCanvasUI.showBoard(thelloDivUI, othelloCanvasUI, othelloBL, "canvas_stage");
         });
 
     </script>
