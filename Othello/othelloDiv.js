@@ -31,7 +31,7 @@ OthelloDiv.prototype.showBoard = function (pOthelloDivUI, pOthelloCanvasUI, pOth
                                 if (pOthelloBL.checkTurnOver(_x, _y, true) > 0) {
                                     pOthelloBL.board[_x][_y] = pOthelloBL.turn;
                                     pOthelloDivUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, pBoard);
-                                    othelloCanvasUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, "canvas_stage");
+                                    pOthelloCanvasUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, "canvas_stage");
                                     pOthelloBL.turn = pOthelloBL.PIECE_TYPE.SWITHING - pOthelloBL.turn;
                                 }
     

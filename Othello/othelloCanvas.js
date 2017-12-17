@@ -17,13 +17,13 @@ OthelloCanvas.prototype.showBoard = function (pOthelloDivUI, pOthelloCanvasUI, p
         var rect = e.target.getBoundingClientRect();
         mouseX = e.clientX - Math.floor(rect.left);
         mouseY = e.clientY - Math.floor(rect.top);
-        var _x = getPointX(mouseX);
-        var _y = getPointY(mouseY);
+        var _x = pOthelloCanvasUI.getPointX(mouseX);
+        var _y = pOthelloCanvasUI.getPointY(mouseY);
         if (pOthelloBL.board[_x][_y] == pOthelloBL.PIECE_TYPE.NONE) {
             if (pOthelloBL.checkTurnOver(_x, _y, true) > 0) {
                 pOthelloBL.board[_x][_y] = pOthelloBL.turn;
                 pOthelloDivUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, "board");
-                othelloCanvasUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, pCanvas);
+                pOthelloCanvasUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, pCanvas);
                 pOthelloBL.turn = pOthelloBL.PIECE_TYPE.SWITHING - pOthelloBL.turn;
             }
         } else {
@@ -31,19 +31,20 @@ OthelloCanvas.prototype.showBoard = function (pOthelloDivUI, pOthelloCanvasUI, p
         }
         delete canvas;
     }
-
-    　　
-    for (var y = 0; y < pOthelloBL.BOARD_TYPE.WIDTH; y++) {　　　
-        for (var x = 0; x < pOthelloBL.BOARD_TYPE.HEIGHT; x++) {　　　　
+　
+    for (var y = 1; y <= pOthelloBL.BOARD_TYPE.WIDTH; y++) {　　　
+        for (var x = 1; x <= pOthelloBL.BOARD_TYPE.HEIGHT; x++) {　　　　
             this.drawGrid(this.GRID_SIZE, context, x, y);
+            console.log(x + "," + y + "," + pOthelloBL.board[x][y]);
             if (pOthelloBL.board[x][y] != pOthelloBL.PIECE_TYPE.NONE) {
                 circleX = this.GRID_SIZE / 2 + (this.GRID_SIZE * x);
                 circleY = this.GRID_SIZE / 2 + (this.GRID_SIZE * y);
+                console.log(circleX + "," + circleY);
             }
             if (pOthelloBL.board[x][y] == pOthelloBL.PIECE_TYPE.BLACK) {
-                this.drawStone(pOthelloBL.CIRCLE_RADIUS, context, 'black', circleX, circleY);
+                this.drawStone(this.CIRCLE_RADIUS, context, 'black', circleX, circleY);
             } else if (pOthelloBL.board[x][y] == pOthelloBL.PIECE_TYPE.WHITE) {
-                this.drawStone(pOthelloBL.CIRCLE_RADIUS, context, 'white', circleX, circleY);
+                this.drawStone(this.CIRCLE_RADIUS, context, 'white', circleX, circleY);
             }
         }　　
     }　　
