@@ -14,6 +14,7 @@ var Othello = function() {
 
     this.board = [];
 
+    //先行
     this.turn = this.PIECE_TYPE.BLACK;
   }
 
@@ -34,6 +35,7 @@ var Othello = function() {
 
   }
 
+  //駒を裏返す処理。
   Othello.prototype.checkTurnOver = function (x, y, flip) {
     
             var ret = 0;
@@ -75,4 +77,7 @@ var Othello = function() {
             return ret;
         }
         
-    
+        //描画処理のインターフェース的なやつ。
+        Othello.prototype.IShowBoard = function(pObj,pOthello){
+            pObj.showBoard(pObj,pOthello);
+        }

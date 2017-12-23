@@ -1,18 +1,20 @@
-var OthelloCanvas = function () {
+var OthelloCanvas = function (pCanvas) {
     this.GRID_SIZE = 64; //１つのグリッドのピクセルサイズ
     this.CIRCLE_RADIUS = 28;
+    this.canvasStage = pCanvas;
 }
 
-OthelloCanvas.prototype.showBoard = function (pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, pCanvas) {
+OthelloCanvas.prototype.showBoard = function (pOthelloCanvasUI, pOthelloBL) {
     //コンテキストを取得する。この場合のコンテキストはスケッチブックと
     //絵筆に相当する。2dは2次元の意味。
-    var canvas = document.getElementById(pCanvas);　　
+    var canvas = document.getElementById(pOthelloCanvasUI.canvasStage);　　
     var context = canvas.getContext('2d');
 
     //駒の中心の位置
     var circleX;
     var circleY;
 
+    //クリックイベントの設定。
     canvas.onclick = function (e) {
         var rect = e.target.getBoundingClientRect();
         mouseX = e.clientX - Math.floor(rect.left);
@@ -22,8 +24,7 @@ OthelloCanvas.prototype.showBoard = function (pOthelloDivUI, pOthelloCanvasUI, p
         if (pOthelloBL.board[_x][_y] == pOthelloBL.PIECE_TYPE.NONE) {
             if (pOthelloBL.checkTurnOver(_x, _y, true) > 0) {
                 pOthelloBL.board[_x][_y] = pOthelloBL.turn;
-                pOthelloDivUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, "board");
-                pOthelloCanvasUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, pCanvas);
+                pOthelloBL.IShowBoard(pOthelloCanvasUI, pOthelloBL);
                 pOthelloBL.turn = pOthelloBL.PIECE_TYPE.SWITHING - pOthelloBL.turn;
             }
         } else {
@@ -32,14 +33,13 @@ OthelloCanvas.prototype.showBoard = function (pOthelloDivUI, pOthelloCanvasUI, p
         delete canvas;
     }
 　
+    //描画。
     for (var y = 1; y <= pOthelloBL.BOARD_TYPE.WIDTH; y++) {　　　
         for (var x = 1; x <= pOthelloBL.BOARD_TYPE.HEIGHT; x++) {　　　　
             this.drawGrid(this.GRID_SIZE, context, x, y);
-            console.log(x + "," + y + "," + pOthelloBL.board[x][y]);
             if (pOthelloBL.board[x][y] != pOthelloBL.PIECE_TYPE.NONE) {
                 circleX = this.GRID_SIZE / 2 + (this.GRID_SIZE * x);
                 circleY = this.GRID_SIZE / 2 + (this.GRID_SIZE * y);
-                console.log(circleX + "," + circleY);
             }
             if (pOthelloBL.board[x][y] == pOthelloBL.PIECE_TYPE.BLACK) {
                 this.drawStone(this.CIRCLE_RADIUS, context, 'black', circleX, circleY);
@@ -50,6 +50,7 @@ OthelloCanvas.prototype.showBoard = function (pOthelloDivUI, pOthelloCanvasUI, p
     }　　
 }
 
+//オセロ板の1マス。
 OthelloCanvas.prototype.drawGrid = function (gridSize, context, x, y) {　　
     context.clearRect(x * gridSize, y * gridSize, gridSize, gridSize);　　
     context.fillStyle = 'rgba(0, 128, 0, 1.0)';　　
@@ -58,6 +59,7 @@ OthelloCanvas.prototype.drawGrid = function (gridSize, context, x, y) {　　
     context.strokeRect(x * gridSize, y * gridSize, gridSize, gridSize);　
 }
 
+//オセロの駒
 OthelloCanvas.prototype.drawStone = function (radius, context, color, x, y) {　　
     context.beginPath(); //円を描くためのパスを一度リセットする。
     　　
@@ -69,10 +71,12 @@ OthelloCanvas.prototype.drawStone = function (radius, context, color, x, y) {　
     context.stroke();　
 }
 
+//X軸のクリック位置から駒が置かれたX軸の位置を取得。
 OthelloCanvas.prototype.getPointX = function (pX) {
     return Math.floor(pX / 64);
 }
 
+//Y軸のクリック位置から駒が置かれたY軸の位置を取得。
 OthelloCanvas.prototype.getPointY = function (pY) {
     return Math.floor(pY / 64);
 }

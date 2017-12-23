@@ -1,15 +1,17 @@
-var OthelloDiv = function(pCell, pBlack, pWhite){
+var OthelloDiv = function(pCell, pBlack, pWhite, pBoard){
     // 0:石無し, 1:黒, 2:白
     this.stone = [
         document.getElementById(pCell),
         document.getElementById(pBlack),
         document.getElementById(pWhite)
     ];
+
+    this.board = pBoard;
 }
 
-OthelloDiv.prototype.showBoard = function (pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, pBoard) {
+OthelloDiv.prototype.showBoard = function (pOthelloDivUI, pOthelloBL) {
     
-            var b = document.getElementById(pBoard);
+            var b = document.getElementById(pOthelloDivUI.board);
     
             while (b.firstChild) {
                 b.removeChild(b.firstChild);
@@ -30,8 +32,7 @@ OthelloDiv.prototype.showBoard = function (pOthelloDivUI, pOthelloCanvasUI, pOth
                             cell.onclick = function () {
                                 if (pOthelloBL.checkTurnOver(_x, _y, true) > 0) {
                                     pOthelloBL.board[_x][_y] = pOthelloBL.turn;
-                                    pOthelloDivUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, pBoard);
-                                    pOthelloCanvasUI.showBoard(pOthelloDivUI, pOthelloCanvasUI, pOthelloBL, "canvas_stage");
+                                    pOthelloBL.IShowBoard(pOthelloDivUI, pOthelloBL);
                                     pOthelloBL.turn = pOthelloBL.PIECE_TYPE.SWITHING - pOthelloBL.turn;
                                 }
     

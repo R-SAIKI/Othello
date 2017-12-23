@@ -15,8 +15,8 @@
 
 <body>
     <div class="ChangeElem_Btn_Content">
-        <button class="ChangeElem_Btn">divのオセロ</button>
-        <button class="ChangeElem_Btn">canvasのオセロ(未完成)</button>
+        <button id="divUI" class="ChangeElem_Btn">divのオセロ</button>
+        <button id="canvasUI" class="ChangeElem_Btn">canvasのオセロ(未完成)</button>
     </div>
     <ul>
         <li class="ChangeElem_Panel">
@@ -24,9 +24,15 @@
                 <div id="cell" class="square">
                     <div class="cell"></div>
                 </div>
-                <div id="black" class="square"><img class="block" src="black.png"></img>
+                <div id="black" class="square">
+                    <div class="cell">
+                        <div class="blackStone"></div>
+                    </div>
                 </div>
-                <div id="white" class="square"><img class="block" src="white.png"></img>
+                <div id="white" class="square">                        
+                    <div class="cell">                                
+                        <div class="whiteStone"></div>                            
+                    </div>
                 </div>
             </div>
 
@@ -58,18 +64,26 @@
                 });
             });
 
+            
             //共通ロジックを初期化
             var othelloBL = new Othello();
             othelloBL.loadInit();
 
-            var othelloDivUI = new OthelloDiv("cell", "black", "white");
-            var othelloCanvasUI = new OthelloCanvas();
+            var othelloDivUI = new OthelloDiv("cell", "black", "white", "board");
+            var othelloCanvasUI = new OthelloCanvas("canvas_stage");
 
             //divで描画
-            othelloDivUI.showBoard(othelloDivUI, othelloCanvasUI, othelloBL, "board");
+            othelloBL.IShowBoard(othelloDivUI, othelloBL);
 
-            //cambusで描画
-            othelloCanvasUI.showBoard(othelloDivUI, othelloCanvasUI, othelloBL, "canvas_stage");
+            /*divとcanvasの切替時のイベント設定*/
+            $('#divUI').click(function(){
+                othelloBL.IShowBoard(othelloDivUI, othelloBL);
+            });
+            $('#canvasUI').click(function(){
+                //canvasで描画
+                othelloBL.IShowBoard(othelloCanvasUI, othelloBL);
+            });
+
         });
 
     </script>
