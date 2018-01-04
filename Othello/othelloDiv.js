@@ -34,6 +34,7 @@ OthelloDiv.prototype.showBoard = function (pOthelloDivUI, pOthelloBL) {
                                     pOthelloBL.board[_x][_y] = pOthelloBL.turn;
                                     pOthelloBL.IShowBoard(pOthelloDivUI, pOthelloBL);
                                     pOthelloBL.turn = pOthelloBL.PIECE_TYPE.SWITHING - pOthelloBL.turn;
+                                    pOthelloBL.turnSkip(); // 置ける場所が無かったらパス
                                 }
     
                             };

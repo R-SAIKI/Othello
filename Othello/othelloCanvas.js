@@ -26,13 +26,12 @@ OthelloCanvas.prototype.showBoard = function (pOthelloCanvasUI, pOthelloBL) {
                 pOthelloBL.board[_x][_y] = pOthelloBL.turn;
                 pOthelloBL.IShowBoard(pOthelloCanvasUI, pOthelloBL);
                 pOthelloBL.turn = pOthelloBL.PIECE_TYPE.SWITHING - pOthelloBL.turn;
+                pOthelloBL.turnSkip(); // 置ける場所が無かったらパス
+                delete canvas;
             }
-        } else {
-            return;
-        }
-        delete canvas;
-    }
-　
+        } 
+        return;   
+    }　
     //描画。
     for (var y = 1; y <= pOthelloBL.BOARD_TYPE.WIDTH; y++) {　　　
         for (var x = 1; x <= pOthelloBL.BOARD_TYPE.HEIGHT; x++) {　　　　
@@ -73,10 +72,10 @@ OthelloCanvas.prototype.drawStone = function (radius, context, color, x, y) {　
 
 //X軸のクリック位置から駒が置かれたX軸の位置を取得。
 OthelloCanvas.prototype.getPointX = function (pX) {
-    return Math.floor(pX / 64);
+    return Math.floor(pX / this.GRID_SIZE);
 }
 
 //Y軸のクリック位置から駒が置かれたY軸の位置を取得。
 OthelloCanvas.prototype.getPointY = function (pY) {
-    return Math.floor(pY / 64);
+    return Math.floor(pY / this.GRID_SIZE);
 }
