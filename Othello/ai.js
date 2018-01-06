@@ -15,10 +15,10 @@ var OthelloAI = function (pOthelloBL) {
     ];
 
     // 個体の格納領域。
-    this.gene = new Array(this.NUMBER_OF_GENE);
+    this.gene = [];
     
     // 個体の点数の格納領域
-    this.geneScore = new Array(this.NUMBER_OF_GENE);
+    this.geneScore = [];
 
     this.OtholloBL = pOthelloBL;
 
@@ -29,14 +29,20 @@ var OthelloAI = function (pOthelloBL) {
 
 // Main関数
 OthelloAI.prototype.main = function(){
-    this.init(this.NUMBER_OF_GENE, this.NUMBER_OF_CHROMOSOME);
+    var boardCell = [];
     
+    this.initGene(this.NUMBER_OF_GENE, this.NUMBER_OF_CHROMOSOME);
+    this.getPointXY(this.gene, boardCell);
+    
+    this.evaluateScore(boardCell);
+
+
 }
 
 
 // 個体の初期設定
 //gene[i][j]:i番目の個体のj番目の染色体（二進数で駒の位置を表現する）
-OthelloAI.prototype.init = function (pNunberOfGene, pNunberOfChromosome) {
+OthelloAI.prototype.initGene = function (pNunberOfGene, pNunberOfChromosome) {
     for (var i = 0; i < pNunberOfGene; i++) {
         gene[i] = new Array(pNunberOfChromosome);
         for (var j = 0; j < pNunberOfChromosome; j++) {
@@ -46,8 +52,18 @@ OthelloAI.prototype.init = function (pNunberOfGene, pNunberOfChromosome) {
 }
 
 
+// 現在の個体を元に新しい個体を生む。
+OthelloAI.prototype.bornGene = function(){
+    for(var i = 0; i < this.geneScore.length; i++){
+        if(this.geneScore[i] == 0){
+            
+        }
+    }
+}
+
+
 // 二点交叉
-OthelloAI.prototype.twoPointsCrossing = function (pGene1, pGene2) {
+OthelloAI.prototype.twoPointsCross = function (pGene1, pGene2) {
 
     // 配列のコピー
     var geneClone1 = pGene1.slice(0, pGene1.length);
@@ -104,4 +120,41 @@ OthelloAI.prototype.evaluate = function (pX, pY) {
 }
 
 
+// 適合度を評価して、点数の高い順に並び替える。
+OthelloAI.prototype.evaluateScore = function(pBoardCell){
+    var distinctBoardCell = [];
+    distinctBoardCell = pBoardCell.filter(function (x, i, self) {
+        return self.indexOf(x) === i;
+    });
+    var x = distinctBoardCell[i].substr(1,1);
+    var y = distinctBoardCell[i].substr(2,1);
+    for(var i = 0; i < distinctBoardCell.length; i++){
+        this.geneScore[i] = {X:x, Y:y, score:this.evaluate(x, y)};
+    }
+    this.geneScore.sort(function(a,b){
+        if(a.score > b.score) return -1;
+        if(a.score < b.score) return 1;
+        return 0;
+    });
+}
+
+
+// 個体の内容からオセロボードの駒の位置を取得する
+OthelloAI.prototype.getPointXY = function(pGene, pPointXY){
+    var strX = '';
+    var strY = '';
+    for(var i = 0; i < pGene.length; i++){
+        strX = parseInt(pGene[i].join('').slice(1,this.NUMBER_OF_CHROMOSOME/2),2) + '';
+        strY = parseInt(pGene[i].join('').slice(this.NUMBER_OF_CHROMOSOME/2,this.NUMBER_OF_CHROMOSOME),2) + '';
+        pPointXY[i] = strX + strY;
+    }
+}
+
+
+// オセロボードの駒の位置を個体に変換する。
+OthelloAI.prototype.getGene = function(pGene){
+    for(var i = 0; i < this.geneScore.length; i++){
+        pGene[i] = parseInt(this.geneScore[i].X.toString(2) + this.geneScore[i].Y.toString(2)); 
+    }
+}
 
