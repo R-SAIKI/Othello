@@ -40,8 +40,6 @@ Othello.prototype.loadInit = function () {
     // 「OK」時の処理開始 ＋ 確認ダイアログの表示
     if (window.confirm('先攻もらっていいですか？')) {
         var othelloAI = new OthelloAI(this);
-        console.log('othello.js内');
-        console.log(othelloAI.geneScore);
         othelloAI.main();
         delete othelloAI;
     }

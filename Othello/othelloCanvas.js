@@ -22,7 +22,7 @@ OthelloCanvas.prototype.showBoard = function (pOthelloCanvasUI, pOthelloBL) {
         var _x = pOthelloCanvasUI.getPointX(mouseX);
         var _y = pOthelloCanvasUI.getPointY(mouseY);
         if (pOthelloBL.board[_x][_y] == pOthelloBL.PIECE_TYPE.NONE) {
-            if(pOthelloBL.commonClickEvent(_x, _y, pOthelloBL, pOthelloDivUI)) delete canvas;
+            if(pOthelloBL.commonClickEvent(_x, _y, pOthelloBL, pOthelloCanvasUI)) delete canvas;
         } 
         return;   
     }　

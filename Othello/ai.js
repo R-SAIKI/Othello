@@ -32,6 +32,7 @@ OthelloAI.prototype.main = function(){
     var bestGene = this.bornGene();
     this.OtholloBL.checkTurnOver(bestGene.X, bestGene.Y, true);
     this.OtholloBL.board[bestGene.X][bestGene.Y] = this.OtholloBL.turn;
+    this.OtholloBL.turn = this.OtholloBL.PIECE_TYPE.SWITHING - this.OtholloBL.turn;
     // 置ける場所が無かったらパス
     if(!this.OtholloBL.turnSkip()){
         var othelloAI = new OthelloAI(this.OtholloBL);
@@ -56,6 +57,7 @@ OthelloAI.prototype.initGene = function (pNunberOfGene, pNunberOfChromosome, pGe
 // 評価が0点の個体を変化させて、全ての個体で最も点数が高い個体を返す。
 OthelloAI.prototype.bornGene = function(){
     var lowScoreGenes = [];
+    var lowScoreGenesFiler = [];
     var count = 0;
     while(count < 10 || this.geneScore[0].score == 0){
         for(var i = 0; i < this.geneScore.length; i++){
@@ -64,13 +66,19 @@ OthelloAI.prototype.bornGene = function(){
                 this.geneScore.splice(i, 1);
             }
         }
-        for(var i = 0; i < lowScoreGenes.length - 1; i++){
-            this.twoPointsCross(lowScoreGenes[i], lowScoreGenes[i + 1]);
-        }
-        for(var i = 0; i < lowScoreGenes.length; i++){
-            this.mutationEvolution(lowScoreGenes[i], 10);
-        }
-        this.evaluateScore(this.getPointXY(lowScoreGenes));
+        lowScoreGenesFiler = lowScoreGenes.filter(v => v);
+        if(lowScoreGenesFiler.length > 1){
+            // 二点交叉
+            for(var i = 0; i < lowScoreGenesFiler.length - 1; i++){
+                this.twoPointsCross(lowScoreGenesFiler[i], lowScoreGenesFiler[i + 1]);
+            }
+            // 突然変異
+            for(var i = 0; i < lowScoreGenesFiler.length; i++){
+                this.mutationEvolution(lowScoreGenesFiler[i], 10);
+            }
+            this.evaluateScore(this.getPointXY(lowScoreGenesFiler));
+        }     
+        count++;
     }
     return this.geneScore[0];
 }
@@ -211,7 +219,7 @@ OthelloAI.prototype.getGene = function(pIndex){
 OthelloAI.prototype.strToAry = function(pAry, pStr, pStrLength){
     for(var i = pStrLength; i > 0; i--){
         if(pStr.substr(i,1) != ''){
-            pAry[pStrLength - i] = pStr.substr(i,1);
+            pAry[pStrLength - i] = parseInt(pStr.substr(i,1));
         }else{
             pAry[pStrLength - i] = 0;
         }
