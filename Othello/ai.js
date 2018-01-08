@@ -6,6 +6,9 @@ var OthelloAI = function (pOthelloBL) {
     // 染色体の数
     this.NUMBER_OF_CHROMOSOME = 8
 
+    // 世代
+    this.GENERETION = 30 
+
     // 角
     this.CORNER = [
         [1, 1],
@@ -59,7 +62,7 @@ OthelloAI.prototype.bornGene = function(){
     var lowScoreGenes = [];
     var lowScoreGenesFiler = [];
     var count = 0;
-    while(count < 10 || this.geneScore[0].score == 0){
+    while(count < this.GENERETION || this.geneScore[0].score == 0){
         for(var i = 0; i < this.geneScore.length; i++){
             if(this.geneScore[i].score == 0){
                 lowScoreGenes[i] = this.getGene(i);
