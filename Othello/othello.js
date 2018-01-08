@@ -37,6 +37,14 @@ Othello.prototype.loadInit = function () {
     this.board[4][4] = this.PIECE_TYPE.WHITE;
     this.board[5][5] = this.PIECE_TYPE.WHITE;
 
+    // 「OK」時の処理開始 ＋ 確認ダイアログの表示
+    if (window.confirm('先攻もらっていいですか？')) {
+        var othelloAI = new OthelloAI(this);
+        console.log('othello.js内');
+        console.log(othelloAI.geneScore);
+        othelloAI.main();
+        delete othelloAI;
+    }
 }
 
 //駒を裏返せるかチェック
@@ -99,8 +107,29 @@ Othello.prototype.turnSkip = function () {
     if (this.CountValidPoint() == 0) {
         alert(this.PIECE_CHAR[this.turn] + 'はパス!');
         this.turn = this.PIECE_TYPE.SWITHING - this.turn;
+        return false;
     }
+    return true;
 }
+
+
+// ボードクリック時のdivとcanvasの共通処理
+Othello.prototype.commonClickEvent = function(pX, pY, pOthelloBL, pOthelloUI){
+    if (pOthelloBL.checkTurnOver(pX, pY, true) > 0) {
+        pOthelloBL.board[pX][pY] = pOthelloBL.turn;
+        pOthelloBL.IShowBoard(pOthelloUI, pOthelloBL);
+        pOthelloBL.turn = pOthelloBL.PIECE_TYPE.SWITHING - pOthelloBL.turn;
+        // 置ける場所が無かったらパス
+        if(pOthelloBL.turnSkip()){
+            var othelloAI = new OthelloAI(pOthelloBL);
+            othelloAI.main();
+            delete othelloAI;
+            pOthelloBL.IShowBoard(pOthelloUI, pOthelloBL);
+        }
+        return true;                                    
+    }
+    return false;
+} 
 
 
 //描画処理のインターフェース的なやつ。

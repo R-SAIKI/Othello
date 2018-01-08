@@ -22,13 +22,7 @@ OthelloCanvas.prototype.showBoard = function (pOthelloCanvasUI, pOthelloBL) {
         var _x = pOthelloCanvasUI.getPointX(mouseX);
         var _y = pOthelloCanvasUI.getPointY(mouseY);
         if (pOthelloBL.board[_x][_y] == pOthelloBL.PIECE_TYPE.NONE) {
-            if (pOthelloBL.checkTurnOver(_x, _y, true) > 0) {
-                pOthelloBL.board[_x][_y] = pOthelloBL.turn;
-                pOthelloBL.IShowBoard(pOthelloCanvasUI, pOthelloBL);
-                pOthelloBL.turn = pOthelloBL.PIECE_TYPE.SWITHING - pOthelloBL.turn;
-                pOthelloBL.turnSkip(); // 置ける場所が無かったらパス
-                delete canvas;
-            }
+            if(pOthelloBL.commonClickEvent(_x, _y, pOthelloBL, pOthelloDivUI)) delete canvas;
         } 
         return;   
     }　

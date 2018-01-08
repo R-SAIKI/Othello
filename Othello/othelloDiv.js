@@ -29,15 +29,9 @@ OthelloDiv.prototype.showBoard = function (pOthelloDivUI, pOthelloBL) {
                         (function () {
                             var _x = x;
                             var _y = y;
-                            cell.onclick = function () {
-                                if (pOthelloBL.checkTurnOver(_x, _y, true) > 0) {
-                                    pOthelloBL.board[_x][_y] = pOthelloBL.turn;
-                                    pOthelloBL.IShowBoard(pOthelloDivUI, pOthelloBL);
-                                    pOthelloBL.turn = pOthelloBL.PIECE_TYPE.SWITHING - pOthelloBL.turn;
-                                    pOthelloBL.turnSkip(); // 置ける場所が無かったらパス
-                                }
-    
-                            };
+                            cell.onclick = function(){
+                                pOthelloBL.commonClickEvent(_x, _y, pOthelloBL, pOthelloDivUI);
+                            } 
                         })();
                     }
                 }

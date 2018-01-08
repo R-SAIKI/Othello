@@ -1,7 +1,7 @@
 var OthelloAI = function (pOthelloBL) {
 
     // 個体数
-    this.NUMBER_OF_GENE = 5
+    this.NUMBER_OF_GENE = 7
 
     // 染色体の数
     this.NUMBER_OF_CHROMOSOME = 8
@@ -13,9 +13,6 @@ var OthelloAI = function (pOthelloBL) {
         [8, 1],
         [8, 8]
     ];
-
-    // 個体の格納領域。
-    this.gene = [];
     
     // 個体の点数とオセロボードの位置の格納領域
     this.geneScore = [];
@@ -29,45 +26,53 @@ var OthelloAI = function (pOthelloBL) {
 
 // Main関数
 OthelloAI.prototype.main = function(){
-    
-    this.initGene(this.NUMBER_OF_GENE, this.NUMBER_OF_CHROMOSOME);
-    this.evaluateScore(this.getPointXY(this.gene));
-    this.bornGene();
-
+    var gene = [];
+    this.initGene(this.NUMBER_OF_GENE, this.NUMBER_OF_CHROMOSOME, gene);
+    this.evaluateScore(this.getPointXY(gene));
+    var bestGene = this.bornGene();
+    this.OtholloBL.checkTurnOver(bestGene.X, bestGene.Y, true);
+    this.OtholloBL.board[bestGene.X][bestGene.Y] = this.OtholloBL.turn;
+    // 置ける場所が無かったらパス
+    if(!this.OtholloBL.turnSkip()){
+        var othelloAI = new OthelloAI(this.OtholloBL);
+        othelloAI.main();
+        delete othelloAI;
+    }           
 }
 
 
 // 個体の初期設定
 //gene[i][j]:i番目の個体のj番目の染色体（二進数で駒の位置を表現する）
-OthelloAI.prototype.initGene = function (pNunberOfGene, pNunberOfChromosome) {
+OthelloAI.prototype.initGene = function (pNunberOfGene, pNunberOfChromosome, pGene) {
     for (var i = 0; i < pNunberOfGene; i++) {
-        gene[i] = new Array(pNunberOfChromosome);
+        pGene[i] = new Array(pNunberOfChromosome);
         for (var j = 0; j < pNunberOfChromosome; j++) {
-            gene[i][j] = Math.floor(Math.random() * 2);
+            pGene[i][j] = Math.floor(Math.random() * 2);
         };
     };
 }
 
 
-// 評価が0点の個体を変化させる。
+// 評価が0点の個体を変化させて、全ての個体で最も点数が高い個体を返す。
 OthelloAI.prototype.bornGene = function(){
     var lowScoreGenes = [];
     var count = 0;
-    while(count < 10 || this.geneScore[0] == 0){
+    while(count < 10 || this.geneScore[0].score == 0){
         for(var i = 0; i < this.geneScore.length; i++){
-            if(this.geneScore[i] == 0){
-                lowScoreGenes = this.getGene(i);
+            if(this.geneScore[i].score == 0){
+                lowScoreGenes[i] = this.getGene(i);
                 this.geneScore.splice(i, 1);
             }
         }
-        for(var i = 0; i < this.lowScoreGenes.length - 1; i++){
+        for(var i = 0; i < lowScoreGenes.length - 1; i++){
             this.twoPointsCross(lowScoreGenes[i], lowScoreGenes[i + 1]);
         }
-        for(var i = 0; i < this.lowScoreGenes.length; i++){
+        for(var i = 0; i < lowScoreGenes.length; i++){
             this.mutationEvolution(lowScoreGenes[i], 10);
         }
         this.evaluateScore(this.getPointXY(lowScoreGenes));
     }
+    return this.geneScore[0];
 }
 
 
@@ -115,7 +120,6 @@ OthelloAI.prototype.evaluate = function (pX, pY) {
     var ary = [pX, pY];
     // オブジェクトをコピー
     var clone = $.extend(true, {}, this.cloneOtholloBL);
-
     if (clone.checkTurnOver(pX, pY, true) > 0) {
         clone.board[pX][pY] = clone.turn;
         clone.turn = clone.PIECE_TYPE.SWITHING - clone.turn;
@@ -132,12 +136,14 @@ OthelloAI.prototype.evaluate = function (pX, pY) {
 // 適合度を評価して、点数の高い順に並び替える。
 OthelloAI.prototype.evaluateScore = function(pBoardCell){
     var distinctBoardCell = [];
+    var x = 0;
+    var y = 0;
     distinctBoardCell = pBoardCell.filter(function (x, i, self) {
         return self.indexOf(x) === i;
-    });
-    var x = distinctBoardCell[i].substr(1,1);
-    var y = distinctBoardCell[i].substr(2,1);
+    });  
     for(var i = 0; i < distinctBoardCell.length; i++){
+        x = parseInt(distinctBoardCell[i].substr(0,1));
+        y = parseInt(distinctBoardCell[i].substr(1,1));
         this.geneScore.push({X:x, Y:y, score:this.evaluate(x, y)});
     }
     this.geneScore.sort(function(a,b){
@@ -151,26 +157,63 @@ OthelloAI.prototype.evaluateScore = function(pBoardCell){
 // 個体の内容からオセロボードの駒の位置を取得する
 OthelloAI.prototype.getPointXY = function(pGene){
     var pointXY = [];
+
+    // 2進数のものを入れる用
+    var geneX ='';
+    var geneY ='';
+
+    // 10進数に直したものを入れる用
     var strX = '';
     var strY = '';
+
     for(var i = 0; i < pGene.length; i++){
-        strX = parseInt(pGene[i].join('').slice(1,this.NUMBER_OF_CHROMOSOME/2),2) + '';
-        strY = parseInt(pGene[i].join('').slice(this.NUMBER_OF_CHROMOSOME/2,this.NUMBER_OF_CHROMOSOME),2) + '';
+        geneX = pGene[i].join('').slice(0,this.NUMBER_OF_CHROMOSOME/2);
+        geneY = pGene[i].join('').slice(this.NUMBER_OF_CHROMOSOME/2,this.NUMBER_OF_CHROMOSOME);
+        strX = this.precedeCorner(parseInt(geneX,2)) + '';
+        strY = this.precedeCorner(parseInt(geneY,2)) + '';   
         pointXY[i] = strX + strY;
     }
     return pointXY;
 }
 
 
-// オセロボードの駒の位置を個体に変換する。(複数)
-OthelloAI.prototype.getGenes = function(pGenes){
-    for(var i = 0; i < this.geneScore.length; i++){
-        pGenes[i] = parseInt(this.geneScore[i].X.toString(2) + this.geneScore[i].Y.toString(2)); 
+// 角を置きやすくする。
+OthelloAI.prototype.precedeCorner = function(pNumber){
+    if(pNumber > 8 || pNumber < 1){
+        pNumber = Math.floor(Math.random() * 10);
+        if(pNumber > 8 || pNumber < 1){
+            if(Math.floor(Math.random() * 2)){
+                pNumber = 8;
+            }else{
+                pNumber = 1;
+            }                        
+        }     
     }
+    return pNumber;
 }
 
 
 // オセロボードの駒の位置を個体に変換する。
 OthelloAI.prototype.getGene = function(pIndex){
-        return parseInt(this.geneScore[pIndex].X.toString(2) + this.geneScore[pIndex].Y.toString(2)); 
+    // X,Yそれぞれで文字の長さが4文字になるようにする。
+    var strLength = 4;
+    var geneX = new Array(strLength);
+    var geneY = new Array(strLength);
+    var strGeneX = this.geneScore[pIndex].X.toString(2);
+    var strGeneY = this.geneScore[pIndex].Y.toString(2);
+    this.strToAry(geneX, strGeneX, strLength);
+    this.strToAry(geneY, strGeneY, strLength);
+    return geneX.concat(geneY); 
+}
+
+
+// 文字列を配列にする。空文字には0を入れる。
+OthelloAI.prototype.strToAry = function(pAry, pStr, pStrLength){
+    for(var i = pStrLength; i > 0; i--){
+        if(pStr.substr(i,1) != ''){
+            pAry[pStrLength - i] = pStr.substr(i,1);
+        }else{
+            pAry[pStrLength - i] = 0;
+        }
+    }
 }
