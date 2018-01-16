@@ -21,9 +21,6 @@ var OthelloAI = function (pOthelloBL) {
     this.geneScore = [];
 
     this.OtholloBL = pOthelloBL;
-
-    // オブジェクトをコピー
-    this.cloneOtholloBL = $.extend(true, {}, pOthelloBL);
 }
 
 
@@ -35,6 +32,8 @@ OthelloAI.prototype.main = function(){
     var bestGene = this.bornGene();
     this.OtholloBL.checkTurnOver(bestGene.X, bestGene.Y, true);
     this.OtholloBL.board[bestGene.X][bestGene.Y] = this.OtholloBL.turn;
+    console.log(bestGene);
+    console.log(this.OtholloBL.turn);
     this.OtholloBL.turn = this.OtholloBL.PIECE_TYPE.SWITHING - this.OtholloBL.turn;
     // 置ける場所が無かったらパス
     if(!this.OtholloBL.turnSkip()){
@@ -130,8 +129,8 @@ OthelloAI.prototype.evaluate = function (pX, pY) {
     var score = 0;
     var ary = [pX, pY];
     // オブジェクトをコピー
-    var clone = $.extend(true, {}, this.cloneOtholloBL);
-    if (clone.checkTurnOver(pX, pY, true) > 0) {
+    var clone = $.extend(true, {}, this.OtholloBL);
+    if(clone.board[pX][pY] == clone.PIECE_TYPE.NONE && clone.checkTurnOver(pX, pY, true) > 0){
         clone.board[pX][pY] = clone.turn;
         clone.turn = clone.PIECE_TYPE.SWITHING - clone.turn;
         score += 100 - clone.CountValidPoint(clone);
@@ -140,6 +139,7 @@ OthelloAI.prototype.evaluate = function (pX, pY) {
             if (this.CORNER[i] == ary) score += 15;
         }
     }
+    delete clone;
     return score;
 }
 

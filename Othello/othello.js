@@ -12,7 +12,7 @@ var Othello = function () {
         'SWITHING': 3,
     };
     
-    this.PIECE_CHAR = ['黒','白'];
+    this.PIECE_CHAR = ['バグってんじゃない？','黒','白'];
 
     this.BOARD_LENGTH = 10;
 
@@ -36,13 +36,6 @@ Othello.prototype.loadInit = function () {
     this.board[5][4] = this.PIECE_TYPE.BLACK;
     this.board[4][4] = this.PIECE_TYPE.WHITE;
     this.board[5][5] = this.PIECE_TYPE.WHITE;
-
-    // 「OK」時の処理開始 ＋ 確認ダイアログの表示
-    if (window.confirm('先攻もらっていいですか？')) {
-        var othelloAI = new OthelloAI(this);
-        othelloAI.main();
-        delete othelloAI;
-    }
 }
 
 //駒を裏返せるかチェック
@@ -92,8 +85,8 @@ Othello.prototype.checkTurnOver = function (x, y, flip) {
 Othello.prototype.CountValidPoint = function () {
     var count = 0;
     for (var y = 1; y <= this.BOARD_TYPE.WIDTH; y++) {　　　
-        for (var x = 1; x <= this.BOARD_TYPE.HEIGHT; x++) {　　　　
-            if (this.checkTurnOver(x, y, false) > 0) count++;
+        for (var x = 1; x <= this.BOARD_TYPE.HEIGHT; x++) {
+            if (this.board[x][y] == this.PIECE_TYPE.NONE && this.checkTurnOver(x, y, false) > 0) count++;
         }　　
     }
     return count;
@@ -122,7 +115,10 @@ Othello.prototype.commonClickEvent = function(pX, pY, pOthelloBL, pOthelloUI){
             var othelloAI = new OthelloAI(pOthelloBL);
             othelloAI.main();
             delete othelloAI;
-            pOthelloBL.IShowBoard(pOthelloUI, pOthelloBL);
+            $("body").animate({
+                "backgroundColor":"#FFFFF"
+            });
+            pOthelloBL.IShowBoard(pOthelloUI, pOthelloBL)
         }
         return true;                                    
     }

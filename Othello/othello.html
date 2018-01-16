@@ -68,13 +68,21 @@
             
             //共通ロジックを初期化
             var othelloBL = new Othello();
-            othelloBL.loadInit();
-
+            othelloBL.loadInit();        
+            
             var othelloDivUI = new OthelloDiv("cell", "black", "white", "board");
             var othelloCanvasUI = new OthelloCanvas("canvas_stage");
 
-            //divで描画
+            //divで描画                        
             othelloBL.IShowBoard(othelloDivUI, othelloBL);
+
+            // 「OK」時の処理開始 ＋ 確認ダイアログの表示
+            if (window.confirm('先攻もらっていいですか？')) {
+                var othelloAI = new OthelloAI(othelloBL);
+                othelloAI.main();
+                delete othelloAI;
+                othelloBL.IShowBoard(othelloDivUI, othelloBL);
+            }
 
             /*divとcanvasの切替時のイベント設定*/
             $('#divUI').click(function(){
